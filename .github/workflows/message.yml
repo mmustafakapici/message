@@ -1,0 +1,33 @@
+name: Daily Message to Space
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Her gün UTC 00:00'da çalışır
+  workflow_dispatch:  # Manuel çalıştırmayı etkinleştirir
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Create Daily Message
+        run: |
+          echo "### Daily Message to Space 🌌" > message.md
+          echo "Date: $(date '+%Y-%m-%d')" >> message.md
+          echo "" >> message.md
+          echo "Hello, Space! 🌍 We are sending our greetings to the universe from Earth on this beautiful day!" >> message.md
+          cat message.md >> README.md
+
+      - name: Commit and Push Changes
+        env:
+          TOKEN: ${{ secrets.PAT_TOKEN }}  # Secret token'ı kullan
+        run: |
+          git config --global user.name "mmustafakapici"
+          git config --global user.email "ug.mustafa.kapici@toros.edu.tr"
+          git remote set-url origin https://x-access-token:${TOKEN}@github.com/mustafakapici/message.git
+          git add README.md
+          git commit -m "Daily Message: $(date '+%Y-%m-%d')"
+          git push origin main
