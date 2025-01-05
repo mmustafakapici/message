@@ -27,7 +27,7 @@ jobs:
         run: |
           git config --global user.name "mmustafakapici"
           git config --global user.email "ug.mustafa.kapici@toros.edu.tr"
-          git remote set-url origin https://x-access-token:${TOKEN}@github.com/mustafakapici/message.git
+          git remote set-url origin https://x-access-token:${TOKEN}@github.com/mmustafakapici/message.git
           git add README.md
           git commit -m "Daily Message: $(date '+%Y-%m-%d')"
           git push origin main
