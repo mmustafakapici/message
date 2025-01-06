@@ -13,21 +13,26 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Create Daily Message
+      - name: Update Date in Message
         run: |
-          echo "### Daily Message to Space 🌌" > message.md
-          echo "Date: $(date '+%Y-%m-%d')" >> message.md
-          echo "" >> message.md
-          echo "Hello, Space! 🌍 We are sending our greetings to the universe from Earth on this beautiful day!" >> message.md
-          cat message.md >> README.md
+          if grep -q "### Daily Message to Space 🌌" README.md; then
+            # Mevcut tarihi güncelle
+            sed -i "s/^Date: .*/Date: $(date '+%Y-%m-%d')/" README.md
+          else
+            # Eğer mesaj yoksa baştan ekle
+            echo "### Daily Message to Space 🌌" > README.md
+            echo "Date: $(date '+%Y-%m-%d')" >> README.md
+            echo "" >> README.md
+            echo "Hello, Space! 🌍 We are sending our greetings to the universe from Earth on this beautiful day!" >> README.md
+          fi
 
       - name: Commit and Push Changes
         env:
-          TOKEN: ${{ secrets.PAT_TOKEN }}  # Secret token'ı kullan
+          TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config --global user.name "mmustafakapici"
           git config --global user.email "ug.mustafa.kapici@toros.edu.tr"
           git remote set-url origin https://x-access-token:${TOKEN}@github.com/mmustafakapici/message.git
           git add README.md
-          git commit -m "Daily Message: $(date '+%Y-%m-%d')"
+          git commit -m "Updated Message Date: $(date '+%Y-%m-%d')"
           git push origin main
